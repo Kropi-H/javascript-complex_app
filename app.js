@@ -7,6 +7,10 @@ const port = 3000;
 
 const myApp = express();
 myApp.use(express.static("public"));
+
+myApp.use(express.urlencoded({extended:false})); // This tels to express to add users submitted data. This is boilerplate!
+myApp.use(express.json()); // Sending over some json data
+
 myApp.set("views", "views");
 myApp.set("view engine", "ejs");
 
