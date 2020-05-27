@@ -1,3 +1,4 @@
+const usersCollection = require("../db").collection("users");
 const validator = require("validator");
 let User = function (data) {
   // This is our CONSTRUCTOR FUNCTION. This is our reusable blueprint that can be used to create user objec tin other words we're going
@@ -53,6 +54,9 @@ User.prototype.register = function () {
 
   //   Step #2: Only if ther are no validation errors
   //   then save the user data into a database
+  if(!this.errors.length){
+    usersCollection.insertOne(this.data);
+  }
 };
 
 module.exports = User; // By this we can export our function to use it in other places we will calling from by using let User = require("./User")!
