@@ -2,8 +2,10 @@ const User = require("../models/User");
 
 exports.login = function (req, res) {
   let user = new User(req.body);
-  user.login(function(result){
-    res.send(result);
+  user.login().then(function(result){ // If the promise is successfully
+    res.send(result)
+  }).catch(function(err){  // If the promise is unsuccessfully
+    res.send(err)
   });
 };
 

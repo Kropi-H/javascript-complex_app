@@ -55,17 +55,20 @@ User.prototype.validate = function () {
   }
 };
 
-User.prototype.login = function(callback){
-  this.cleanUp()
-  usersCollection.findOne({username:this.data.username}, (err, attemptedUser) => {
-    if(attemptedUser && attemptedUser.password == this.data.password){
-      callback("Congrats");
-    }else{
-      callback("Invalid username / password");
-    }
+User.prototype.login = function () {
+  return new Promise( (resolve, reject) => {
+    this.cleanUp();
+    usersCollection.findOne({ username: this.data.username }).then((attemptedUser)=>{ // Mongodb returns promisses and we can use
+      if (attemptedUser && attemptedUser.password == this.data.password) {
+        resolve("Congrats!");
+      } else {
+        reject("Invalid username / password!");
+      }
+    }).catch(()=>{  // and .catch if something on the mongodb side goes wrond!
+      reject('Please try again later!');
+    });
   });
-}
-
+};
 
 User.prototype.register = function () {
   //   Step #1: Validate user data
