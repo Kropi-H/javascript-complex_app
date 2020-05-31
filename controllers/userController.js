@@ -3,6 +3,10 @@ const User = require("../models/User");
 exports.login = function (req, res) {
   let user = new User(req.body);
   user.login().then(function(result){ // If the promise is successfully
+    req.session.user = {
+      favColor:"blue",
+      username:user.data.username
+    };
     res.send(result)
   }).catch(function(err){  // If the promise is unsuccessfully
     res.send(err)
@@ -22,5 +26,9 @@ exports.register = function (req, res) {
 };
 
 exports.home = function (req, res) {
-  res.render('home-quest');
+  if(req.session.user){
+    res.send("Welcome to the actual application");
+  }else{
+    res.render('home-quest');
+  }
 };
