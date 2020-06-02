@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const usersCollection = require("../db").collection("users");
+const usersCollection = require("../db").db().collection("users");
 const validator = require("validator");
 let User = function (data) {
   // This is our CONSTRUCTOR FUNCTION. This is our reusable blueprint that can be used to create user objec tin other words we're going
