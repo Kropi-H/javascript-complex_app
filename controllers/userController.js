@@ -7,13 +7,19 @@ exports.login = function (req, res) {
       favColor:"blue",
       username:user.data.username
     };
-    res.send(result)
+    req.session.save(function(){
+      res.redirect('/');
+    });
   }).catch(function(err){  // If the promise is unsuccessfully
     res.send(err)
   });
 };
 
-exports.logout = function () {};
+exports.logout = function (req, res) {
+  req.session.destroy(function(){
+    res.redirect('/');
+  });
+};
 
 exports.register = function (req, res) {
   let user = new User(req.body); // This makes new instance of User = new object and seti it in to the variable user
@@ -27,7 +33,7 @@ exports.register = function (req, res) {
 
 exports.home = function (req, res) {
   if(req.session.user){
-    res.render('home-logged-in-no-results', {
+    res.render('home-dashboard', {
       username:req.session.user.username
     });
   }else{
