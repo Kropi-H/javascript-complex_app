@@ -11,7 +11,10 @@ exports.login = function (req, res) {
       res.redirect('/');
     });
   }).catch(function(err){  // If the promise is unsuccessfully
-    res.send(err)
+    req.flash('errors', err);
+    req.session.save(function(){
+      res.redirect('/');
+    })
   });
 };
 
@@ -37,6 +40,6 @@ exports.home = function (req, res) {
       username:req.session.user.username
     });
   }else{
-    res.render('home-quest');
+    res.render('home-quest', {errors: req.flash('errors')});
   }
 };

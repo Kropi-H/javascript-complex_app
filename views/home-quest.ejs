@@ -31,6 +31,10 @@
   </header>
 <!-- header ends here -->
 
+<% errors.forEach(function(message){ %>
+<div class="alert alert-danger text-center"><%= message %></div>
+<% }) %>
+
 <div class="container py-md-5">
 
   <div class="row align-items-center">

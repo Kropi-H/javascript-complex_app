@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
+const flash = require("connect-flash");
 const ejs = require("ejs");
 
 const router = require("./router");
@@ -21,6 +22,7 @@ let sessionOptions = session({
 });
 
 myApp.use(sessionOptions);
+myApp.use(flash());
 
 myApp.use(express.static("public"));
 
