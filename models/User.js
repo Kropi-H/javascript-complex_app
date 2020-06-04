@@ -26,7 +26,7 @@ User.prototype.cleanUp = function () {
   };
 };
 
-User.prototype.validate = function () {
+User.prototype.validate = async function () {
   if (this.data.username == "") {
     this.errors.push("You must provide a username!");
   }
@@ -54,12 +54,25 @@ User.prototype.validate = function () {
   if (this.data.username.length > 30) {
     this.errors.push("Username cannot exceed 30 characters!");
   }
+
+  // Only if username is valid then check to see if it's already taken
+  if(this.data.username.length > 2 && this.data.username.length <31 && validator.isAlphanumeric(this.data.username)){
+    let usernameExists = await usersCollection.findOne({username:this.data.username});
+    if(usernameExists){this.errors.push("That usename is already taken")};
+  }
+
+    // Only if email is valid then check to see if it's already taken
+    if(validator.isEmail(this.data.email)){
+      let emailExists = await usersCollection.findOne({email:this.data.email});
+      if(emailExists){this.errors.push("That email is already being used")};
+    }
+
 };
 
 User.prototype.login = function () {
   return new Promise( (resolve, reject) => {
     this.cleanUp();
-    usersCollection.findOne({ username: this.data.username }).then((attemptedUser)=>{ // Mongodb returns promisses and we can use
+    usersCollection.findOne({ username: this.data.username }).then((attemptedUser)=>{ // Mongodb returns promisses that we can use
       if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
         resolve("Congrats!");
       } else {
