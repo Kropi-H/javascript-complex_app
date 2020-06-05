@@ -26,17 +26,19 @@ exports.logout = function (req, res) {
 
 exports.register = function (req, res) {
   let user = new User(req.body); // This makes new instance of User = new object and seti it in to the variable user
-  user.register();
-  if (user.errors.length) {
-    user.errors.forEach(function(error){
+  user.register().then(()=>{
+    req.session.user = {usename: user.data.username}
+    req.session.save(function(){
+      res.redirect('/')
+    })
+  }).catch((reqErrors)=>{
+    reqErrors.forEach(function(error){
       req.flash('regErrors', error)
     })
     req.session.save(function(){
       res.redirect('/')
     })
-  } else {
-    res.send("Congrats, there are no errors");
-  }
+  });
 };
 
 exports.home = function (req, res) {
