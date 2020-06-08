@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const usersCollection = require("../db").db().collection("users");
 const validator = require("validator");
+const md5 = require("md5");
 let User = function (data) {
   // This is our CONSTRUCTOR FUNCTION. This is our reusable blueprint that can be used to create user objec tin other words we're going
   this.data = data;
@@ -76,6 +77,7 @@ User.prototype.login = function () {
     this.cleanUp();
     usersCollection.findOne({ username: this.data.username }).then((attemptedUser)=>{ // Mongodb returns promisses that we can use
       if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
+        this.getAvatar();
         resolve("Congrats!");
       } else {
         reject("Invalid username / password!");
@@ -96,15 +98,20 @@ User.prototype.register = function(){
     //   then save the user data into a database
     if (!this.errors.length) {
   
-      // Hash user passwodrd
+      // Hash user password
       let salt = bcrypt.genSaltSync(10);
       this.data.password = bcrypt.hashSync(this.data.password, salt);
       await usersCollection.insertOne(this.data);
+      this.getAvatar();
       resolve();
     } else {
       reject(this.errors);
     }
   })
+}
+
+User.prototype.getAvatar = function(){
+  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`;
 }
 
 module.exports = User; // By this we can export our function to use it in other places we will calling from by using let User = require("./User")!
