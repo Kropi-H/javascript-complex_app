@@ -24,6 +24,11 @@ let sessionOptions = session({
 myApp.use(sessionOptions);
 myApp.use(flash());
 
+myApp.use(function(req, res, next){
+    res.locals.user = req.session.user;
+    next();
+})
+
 myApp.use(express.static("public"));
 
 myApp.use(express.urlencoded({ extended: false })); // This tels to express to add users submitted data. This is boilerplate!
