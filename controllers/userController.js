@@ -38,7 +38,7 @@ exports.logout = function (req, res) {
 };
 
 exports.register = function (req, res) {
-  let user = new User(req.body); // This makes new instance of User = new object and seti it in to the variable user
+  let user = new User(req.body); // This makes new instance of User = new object and set it in to the variable user
   user.register().then(()=>{
     req.session.user = {
       usename: user.data.username,
@@ -65,3 +65,19 @@ exports.home = function (req, res) {
     res.render('home-quest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
   }
 };
+
+exports.ifUserExists = function(req, res, next){
+    User.findByUsername(req.params.username).then(function(userDocument){
+      req.profileUser = userDocument;
+      next();
+    }).catch(function(){
+      res.render('404');
+    });
+}
+
+exports.profilePostsScreen = function(req, res){
+  res.render('profile-posts', {
+    profileUsername: req.profileUser.username,
+    profileAvatar: req.profileUser.avatar
+  });
+}
