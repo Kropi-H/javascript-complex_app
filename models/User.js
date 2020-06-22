@@ -2,10 +2,12 @@ const bcrypt = require('bcryptjs');
 const usersCollection = require("../db").db().collection("users");
 const validator = require("validator");
 const md5 = require("md5");
-let User = function (data) {
+let User = function (data, getAvatar) {
   // This is our CONSTRUCTOR FUNCTION. This is our reusable blueprint that can be used to create user objec tin other words we're going
   this.data = data;
   this.errors = [];
+  if(getAvatar == undefined){getAvatar=false}
+  if(getAvatar){this.getAvatar()}
 };
 
 User.prototype.cleanUp = function () {
