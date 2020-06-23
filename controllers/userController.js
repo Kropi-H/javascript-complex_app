@@ -63,7 +63,7 @@ exports.home = function (req, res) {
   if(req.session.user){
     res.render('home-dashboard');
   }else{
-    res.render('home-quest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
+    res.render('home-quest', {regErrors: req.flash('regErrors')});
   }
 };
 

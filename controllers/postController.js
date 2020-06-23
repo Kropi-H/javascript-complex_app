@@ -30,3 +30,35 @@ exports.viewEditScreen = async function(req, res){
     res.render('404');
     }
 }
+
+exports.edit = function(req, res){
+    let post = new Post(req.body, req.visitorId, req.params.id);
+    post.update().then((status)=>{
+        // The pot was succesfully updated in the database
+
+        // Or user did have permission, but there were validation errors
+        if (status == "success") {
+            // Post was updated in db
+            req.flash("success", "Post successfully updated!");
+            req.session.save(function(){
+                res.redirect(`/post/${req.params.id}/edit`)
+            })
+        } else {
+            post.errors.forEach(function(error){
+                req.flas("errros", error);
+            })
+            req.session.save(function(){
+                res.redirect(`/post/${req.params.id}/edit`)
+            })
+        }
+
+    }).catch(()=>{
+        // A post with the requested id doesn't exists
+
+        // Or if the current visitor is not the owner of the requested post
+        req.flash("errors", "You do not have a permission to perform that action!");
+        req.session.save(function(){
+            res.redirect("/");
+        })
+    });
+}
