@@ -2,7 +2,9 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const flash = require("connect-flash");
+const mardown = require("marked");
 const ejs = require("ejs");
+const sanitizeHTML = require("sanitize-html");
 
 const router = require("./router");
 
@@ -25,6 +27,11 @@ myApp.use(sessionOptions);
 myApp.use(flash());
 
 myApp.use(function(req, res, next){
+    // Make our mardown function available from within ejs templates
+    res.locals.filsterUserHTML = function(content){
+        return sanitizeHTML(mardown(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'a'], allowedAttributes: {}})
+    }
+
     // Make all error and flash messages available for all templates
     res.locals.errors = req.flash("errors");
     res.locals.success = req.flash("success");
